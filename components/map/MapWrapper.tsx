@@ -1,4 +1,5 @@
 "use client";
+import { PositionType } from "@/types";
 import dynamic from "next/dynamic";
 
 const Map = dynamic(() => import("./Map"), {
@@ -6,6 +7,9 @@ const Map = dynamic(() => import("./Map"), {
   loading: () => <p>Loading Map....</p>,
 });
 
-export default function MapWrapper() {
-  return <Map />;
+interface MapWrapperProps {
+  position: PositionType | null;
+}
+export default function MapWrapper({ position }: MapWrapperProps) {
+  return <Map position={position} />;
 }

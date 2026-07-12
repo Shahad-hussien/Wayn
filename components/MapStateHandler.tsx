@@ -1,16 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import useGeolocation from "@/hooks/useGeolocation";
 import MapWrapper from "./map/MapWrapper";
-interface PositionType {
-  lat: number;
-  lng: number;
-}
+
 const MapStateHandler = () => {
-  const [position, setPosition] = useState<PositionType | null>(null);
+  const { position, error } = useGeolocation();
+
   return (
     <div>
-      <MapWrapper />
+      <MapWrapper position={position} />
     </div>
   );
 };

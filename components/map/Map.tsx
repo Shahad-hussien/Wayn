@@ -2,10 +2,22 @@
 import { useEffect, useRef } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
+import { PositionType } from "@/types";
 
-export default function Map() {
+const customIcon = L.divIcon({
+  html: '<div style="font-size:28px">📍</div>',
+  iconSize: [32, 32],
+  iconAnchor: [16, 32],
+  className: "",
+});
+interface MapProps {
+  position: PositionType | null;
+}
+export default function Map({ position }: MapProps) {
   const mapRef = useRef<L.Map | null>(null);
   const mapContainerRef = useRef<HTMLDivElement>(null);
+  const markerRef = useRef<L.Marker | null>(null);
+  const circleRef = useRef<L.Circle | null>(null);
 
   useEffect(() => {
     if (mapContainerRef.current && !mapRef.current) {
@@ -14,14 +26,36 @@ export default function Map() {
         attribution:
           '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
       }).addTo(map);
-
       mapRef.current = map;
     }
+
     return () => {
       mapRef.current?.remove();
       mapRef.current = null;
+      markerRef.current?.remove();
+      markerRef.current = null;
     };
   }, []);
+
+  useEffect(() => {
+    if (!position || !mapRef.current) return;
+
+    if (!markerRef.current) {
+      const marker = L.marker([position.lat, position.lng], {
+        icon: customIcon,
+      }).addTo(mapRef.current);
+      markerRef.current = marker;
+      const accuracyCircle = L.circle([position.lat, position.lng], {
+        radius: position.accuracy,
+      }).addTo(mapRef.current);
+      mapRef.current.setView([position.lat, position.lng], 14);
+      circleRef.current = accuracyCircle;
+    } else {
+      markerRef.current.setLatLng([position.lat, position.lng]);
+      circleRef.current?.setLatLng([position.lat, position.lng]);
+      circleRef.current?.setRadius(position.accuracy);
+    }
+  }, [position]);
 
   return <div ref={mapContainerRef} className="h-dvh w-dvw" />;
 }
