@@ -1,7 +1,11 @@
 "use client";
 import { useState, useRef } from "react";
 import { PlaceType } from "@/types";
-export default function Search() {
+
+interface SearchProps {
+  onPlaceSelected: (place: PlaceType) => void;
+}
+const Search = ({ onPlaceSelected }: SearchProps) => {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<PlaceType[]>([]);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -29,8 +33,12 @@ export default function Search() {
     <div>
       <input value={query} onChange={handleChange} placeholder="Type here..." />
       {results.map((result) => (
-        <div key={result.place_id}>{result.display_name}</div>
+        <div key={result.place_id} onClick={() => onPlaceSelected(result)}>
+          {result.display_name}
+        </div>
       ))}
     </div>
   );
-}
+};
+
+export default Search;

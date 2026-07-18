@@ -2,9 +2,16 @@
 import { useEffect, useRef } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import { PositionType } from "@/types";
+import { PlaceType, PositionType } from "@/types";
 
 const customIcon = L.divIcon({
+  html: '<div style="font-size:28px">👤</div>',
+  iconSize: [32, 32],
+  iconAnchor: [16, 32],
+  className: "",
+});
+
+const selectedPlaceIcon = L.divIcon({
   html: '<div style="font-size:28px">📍</div>',
   iconSize: [32, 32],
   iconAnchor: [16, 32],
@@ -12,11 +19,13 @@ const customIcon = L.divIcon({
 });
 interface MapProps {
   position: PositionType | null;
+  selectedPlace: PlaceType | null;
 }
-export default function Map({ position }: MapProps) {
+export default function Map({ position, selectedPlace }: MapProps) {
   const mapRef = useRef<L.Map | null>(null);
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const markerRef = useRef<L.Marker | null>(null);
+  const selectedPlaceMarker = useRef<L.Marker | null>(null);
   const circleRef = useRef<L.Circle | null>(null);
 
   useEffect(() => {
@@ -56,6 +65,22 @@ export default function Map({ position }: MapProps) {
       circleRef.current?.setRadius(position.accuracy);
     }
   }, [position]);
+
+  useEffect(() => {
+    if (!selectedPlace || !mapRef.current) return;
+    mapRef.current.setView([selectedPlace.lat, selectedPlace.lon], 16);
+    if (!selectedPlaceMarker.current) {
+      const marker = L.marker([selectedPlace.lat, selectedPlace.lon], {
+        icon: selectedPlaceIcon,
+      }).addTo(mapRef.current);
+      selectedPlaceMarker.current = marker;
+    } else {
+      selectedPlaceMarker.current.setLatLng([
+        selectedPlace.lat,
+        selectedPlace.lon,
+      ]);
+    }
+  }, [selectedPlace]);
 
   return <div ref={mapContainerRef} className="h-dvh w-dvw" />;
 }
