@@ -10,7 +10,7 @@ const MapStateHandler = () => {
   const { position, error } = useGeolocation();
   const [selectedPlace, setSelectedPlace] = useState<PlaceType | null>(null);
   return (
-    <div>
+    <div className="relative h-screen w-full overflow-hidden">
       <Search onPlaceSelected={setSelectedPlace} />
       <MapWrapper position={position} selectedPlace={selectedPlace} />
     </div>
