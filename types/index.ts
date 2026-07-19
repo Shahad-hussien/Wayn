@@ -17,3 +17,6 @@ export interface PlaceType {
   lon: number;
   display_name: string;
 }
+export interface SavedPlaceType extends PlaceType {
+  label: string;
+}
