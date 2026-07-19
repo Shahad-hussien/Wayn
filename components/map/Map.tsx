@@ -30,11 +30,14 @@ export default function Map({ position, selectedPlace }: MapProps) {
 
   useEffect(() => {
     if (mapContainerRef.current && !mapRef.current) {
-      const map = L.map(mapContainerRef.current).setView([33.3, 44.4], 14);
+      const map = L.map(mapContainerRef.current, {
+        zoomControl: false,
+      }).setView([33.3, 44.4], 14);
       L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
         attribution:
           '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
       }).addTo(map);
+      L.control.zoom({ position: "bottomleft" }).addTo(map);
       mapRef.current = map;
     }
 
