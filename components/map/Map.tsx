@@ -20,8 +20,9 @@ const selectedPlaceIcon = L.divIcon({
 interface MapProps {
   position: PositionType | null;
   selectedPlace: PlaceType | null;
+  onMapClick: (coords: { lat: number; lng: number }) => void;
 }
-export default function Map({ position, selectedPlace }: MapProps) {
+export default function Map({ position, selectedPlace, onMapClick }: MapProps) {
   const mapRef = useRef<L.Map | null>(null);
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const markerRef = useRef<L.Marker | null>(null);
@@ -38,6 +39,9 @@ export default function Map({ position, selectedPlace }: MapProps) {
           '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
       }).addTo(map);
       L.control.zoom({ position: "bottomleft" }).addTo(map);
+      map.on("click", (e) => {
+        onMapClick(e.latlng);
+      });
       mapRef.current = map;
     }
 

@@ -10,10 +10,18 @@ const Map = dynamic(() => import("./Map"), {
 interface MapWrapperProps {
   position: PositionType | null;
   selectedPlace: PlaceType | null;
+  onMapClick: (coords: { lat: number; lng: number }) => void;
 }
 export default function MapWrapper({
   position,
   selectedPlace,
+  onMapClick,
 }: MapWrapperProps) {
-  return <Map position={position} selectedPlace={selectedPlace} />;
+  return (
+    <Map
+      position={position}
+      selectedPlace={selectedPlace}
+      onMapClick={onMapClick}
+    />
+  );
 }
