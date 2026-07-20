@@ -4,9 +4,14 @@ import { SavedPlaceType } from "@/types";
 interface SavedLocationsProps {
   places: SavedPlaceType[];
   onPlaceClick: (place: SavedPlaceType) => void;
+  onPlaceDelete: (placeId: number) => void;
 }
 
-const SavedLocations = ({ places, onPlaceClick }: SavedLocationsProps) => {
+const SavedLocations = ({
+  places,
+  onPlaceClick,
+  onPlaceDelete,
+}: SavedLocationsProps) => {
   if (places.length === 0) return null;
 
   return (
@@ -19,8 +24,18 @@ const SavedLocations = ({ places, onPlaceClick }: SavedLocationsProps) => {
           <div
             key={place.place_id}
             onClick={() => onPlaceClick(place)}
-            className="px-4 py-3 hover:bg-gray-50 cursor-pointer transition-colors"
+            className="px-4 py-3 hover:bg-gray-50 cursor-pointer transition-colors relative"
           >
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onPlaceDelete(place.place_id);
+              }}
+              className="absolute top-3 right-3 text-gray-400 hover:text-gray-600 text-xl font-medium leading-none transition-colors"
+              aria-label="Close card"
+            >
+              &times;
+            </button>
             <div className="font-medium text-gray-800 text-sm">
               {place.label}
             </div>
